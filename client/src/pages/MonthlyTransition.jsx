@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import "bootstrap";
 import "bootstrap/dist/css/bootstrap.css";
 
 const MonthlyTransition = () => {
@@ -10,60 +9,43 @@ const MonthlyTransition = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // create date
   const handleBtn = async () => {
-    const resp = await axios.post("http://localhost:8000/api/v1/createDate");
-    const { date } = resp.data;
-    setCurrentDate(date);
+    try {
+      const response = await axios.post("http://localhost:8000/api/v1/createDate");
+      const { date } = response.data;
+      setCurrentDate(date);
+    } catch (error) {
+      console.error("Error creating date:", error);
+    }
   };
 
-  // create month
   const handleMonth = async () => {
-    const result = await axios.post("http://localhost:8000/api/v1/createMonth");
-    const { dateType } = result.data;
-    setCurrentMonth(dateType);
+    try {
+      const response = await axios.post("http://localhost:8000/api/v1/createMonth");
+      const { dateType } = response.data;
+      setCurrentMonth(dateType);
+    } catch (error) {
+      console.error("Error creating month:", error);
+    }
   };
-
-  useEffect(() => {
-    const fData = async () => {
-      try {
-        // get month
-        const monthGet = await axios.get(
-          "http://localhost:8000/api/v1/getMonth"
-        );
-
-        if (monthGet.status === 200) {
-          setCurrentMonth(monthGet?.data?.dateType);
-        } else {
-          setCurrentMonth([]);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fData();
-  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // get Date
-        const response = await axios.get(
-          "http://localhost:8000/api/v1/getDate"
-        );
-
+        const response = await axios.get("http://localhost:8000/api/v1/getDate");
         if (response.status === 200) {
-          setDate(response?.data?.getDat);
+          setDate(response.data.getDat);
         } else {
           setDate([]);
         }
         setLoading(false);
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Error fetching data:", error);
         setError("Error fetching data");
         setLoading(false);
       }
     };
+
     fetchData();
   }, []);
 
@@ -71,13 +53,13 @@ const MonthlyTransition = () => {
     <div className="container">
       <div className="d-flex justify-content-between">
         <button onClick={handleBtn} className="btn btn-primary w-25">
-          {currentDate} Create Today Field
+          {currentDate ? `${currentDate} Create Today Field` : "Create Today Field"}
         </button>
 
         <button onClick={handleMonth} className="btn btn-success w-25">
           Create Month
         </button>
-        {/* Month Table  */}
+
         <div>
           <table className="table table-bordered table-striped">
             <thead>
@@ -102,16 +84,12 @@ const MonthlyTransition = () => {
                 <th className="align-middle text-center">Expense Purpose</th>
                 <th className="align-middle text-center">Expense Mode</th>
                 <th className="align-middle text-center">Expense</th>
-                <th className="align-middle text-center">
-                  Expense Refund/Cancle
-                </th>
+                <th className="align-middle text-center">Expense Refund/Cancel</th>
                 <th className="align-middle text-center">Total Expense</th>
                 <th className="align-middle text-center">Earning Purpose</th>
                 <th className="align-middle text-center">Earning Mode</th>
                 <th className="align-middle text-center">Earning</th>
-                <th className="align-middle text-center">
-                  Earning Refund/Cancle
-                </th>
+                <th className="align-middle text-center">Earning Refund/Cancel</th>
                 <th className="align-middle text-center">Total Earning</th>
                 <th className="align-middle text-center">Total In Hand/Cash</th>
                 <th className="align-middle text-center">Total Cheque</th>
@@ -121,11 +99,11 @@ const MonthlyTransition = () => {
             <tbody>
               {loading ? (
                 <tr>
-                  <td>Loading...</td>
+                  <td colSpan="15">Loading...</td>
                 </tr>
               ) : error ? (
                 <tr>
-                  <td>Error: {error}</td>
+                  <td colSpan="15">Error: {error}</td>
                 </tr>
               ) : date.length > 0 ? (
                 date.map((item, index) => (
@@ -171,15 +149,15 @@ const MonthlyTransition = () => {
                 ))
               ) : (
                 <tr>
-                  <td>No data available</td>
+                  <td colSpan="15">No data available</td>
                 </tr>
               )}
               <>
                 <tr>
                   <th className="align-middle text-center">Total Count</th>
                   <th className="align-middle text-center">{date.length}</th>
-                  <th className="align-middle text-center" colSpan={2}>
-                    Total :{" "}
+                  <th className="align-middle text-center" colSpan="2">
+                    Total :
                   </th>
                   <th className="align-middle text-center">10,000.00</th>
                   <th className="align-middle text-center">10,000.00</th>

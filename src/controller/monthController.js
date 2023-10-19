@@ -4,7 +4,8 @@ const { MonthModel } = require("../models/monthModel");
 const createMonth = async (req, res, next) => {
     try {
         const {month} = req.body;
-        const monthCreate = await MonthModel.create({month, userId : req.userId});
+        const yearId = req.params.id;
+        const monthCreate = await MonthModel.create({month, userId : req.userId, yearId});
         res.status(200).json({
             status : "Success",
             monthCreate

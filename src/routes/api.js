@@ -3,26 +3,30 @@ const router = express.Router();
 
 const { userRegister, usreLogin } = require('../controller/userController');
 const { createDate, getDate } = require('../controller/dateController');
-// const { createExpensePurpose } = require('../controller/expensePurposeController');
+
 const { createMonth, getMonth } = require('../controller/monthController');
 const { authMiddleware } = require('../middlewares/userVerify');
-const { expenseCreate } = require('../controller/expenseController');
-const { expenseRefundCreate } = require('../controller/expenseRefundController');
+
 const { totalExpenseCreate } = require('../controller/totalExpenseController');
-const { autoBatchEnhancer } = require('@reduxjs/toolkit');
+const { calculateTotalSummaryAndSaveToFooter } = require('../controller/totalFooterController');
+const { createYear, getYear } = require('../controller/yearController');
+const { yearSummary } = require('../controller/yearSummaryController');
 
 router.post("/userRegister", userRegister);
 router.post("/userLogin", usreLogin);
+
+router.post('/createYear/:id',authMiddleware, createYear);
+router.get('/getYear/:id', authMiddleware, getYear);
+
+router.post('/createMonth/:id',authMiddleware, createMonth);
+router.get('/getMonth/:id',authMiddleware, getMonth);
+
 router.post('/createDate/:id',authMiddleware, createDate);
-router.get('/getDate',authMiddleware, getDate);  
+router.get('/getDate/:id',authMiddleware, getDate);  
 
-router.post('/createMonth',authMiddleware, createMonth);
-router.get('/getMonth',authMiddleware, getMonth);
+router.post('/totalExpense/:id',authMiddleware, totalExpenseCreate);
+router.post('/totalFooter/:id',authMiddleware, calculateTotalSummaryAndSaveToFooter);
 
-router.post('/expenseCreate/:id',authMiddleware, expenseCreate);
-router.post('/expenseRefundCreate/:id',authMiddleware, expenseRefundCreate);
-router.post('/totalExpense/:id',authMiddleware, totalExpenseCreate)
-
-// router.post('/createExpensePurpose', createExpensePurpose);
+router.get('/yearSummary/:id', yearSummary)
 
 module.exports = router;

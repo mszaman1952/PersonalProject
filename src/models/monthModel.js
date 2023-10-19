@@ -7,10 +7,14 @@ const monthSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
+    yearId : {
+      type : mongoose.Schema.Types.ObjectId,
+      ref : "Year"
+    },
     monthType: { 
       type: String,
       required: true,
-      unique: true,
+      // unique: true,
       default : getDefaultMonth()
     },
   },
@@ -28,9 +32,6 @@ function getDefaultMonth() {
   const formattedDate = `${month}-${date.getFullYear()}`;
   return formattedDate;
 }
-
-// Assign the default value using the default() function
-// monthSchema.path('monthType').default(getDefaultMonth);
 
 const MonthModel = model('Month', monthSchema);
 
